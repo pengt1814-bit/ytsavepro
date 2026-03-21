@@ -33,9 +33,20 @@ def get_info():
     if not url:
         return jsonify({'error': 'No URL'}), 400
     try:
-        with yt_dlp.YoutubeDL({'quiet': True, 'skip_download': True}) as ydl:
+        ydl_opts = {
+            'quiet': True,
+            'skip_download': True,
+            'nocheckcertificate': True,
+            'geo_bypass': True,
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            return jsonify({'title': info.get('title', ''), 'duration': info.get('duration_string', ''), 'thumbnail': info.get('thumbnail', ''), 'uploader': info.get('uploader', '')})
+            return jsonify({
+                'title': info.get('title', ''),
+                'duration': info.get('duration_string', ''),
+                'thumbnail': info.get('thumbnail', ''),
+                'uploader': info.get('uploader', '')
+            })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -52,31 +63,50 @@ def download_video():
     try:
         if mode == 'audio':
             kbps = quality.replace('kbps', '')
-            ydl_opts = {'format': 'bestaudio/best', 'outtmpl': out_path + '.%(ext)s', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': kbps}], 'quiet': True}
-            'nocheckcertificate': True,
-'geo_bypass': True,
+            ydl_opts = {
+                'format': 'bestaudio/best',
+                'outtmpl': out_path + '.%(ext)s',
+                'postprocessors': [{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': kbps,
+                }],
+                'quiet': True,
+                'nocheckcertificate': True,
+                'geo_bypass': True,
+            }
             ext = 'mp3'
             mime = 'audio/mpeg'
         else:
             height = quality.replace('p', '')
-            ydl_opts = {'format': f'bestvideo[height<={height}]+bestaudio/best', 'outtmpl': out_path + '.%(ext)s', 'merge_output_format': 'mp4', 'quiet': True}
-            'nocheckcertificate': True,
-'geo_bypass': True,
+            ydl_opts = {
+                'format': f'bestvideo[height<={height}]+bestaudio/best',
+                'outtmpl': out_path + '.%(ext)s',
+                'merge_output_format': 'mp4',
+                'quiet': True,
+                'nocheckcertificate': True,
+                'geo_bypass': True,
+            }
             ext = 'mp4'
             mime = 'video/mp4'
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             title = info.get('title', 'video')
+
         final_path = None
         for f in os.listdir(DOWNLOAD_DIR):
             if f.startswith(job_id):
                 final_path = os.path.join(DOWNLOAD_DIR, f)
                 break
+
         if not final_path:
             return jsonify({'error': 'File not found'}), 500
+
         safe_title = "".join(c for c in title if c.isalnum() or c in ' -_').strip()[:60]
         cleanup_file(final_path, delay=120)
         return send_file(final_path, mimetype=mime, as_attachment=True, download_name=f"{safe_title}.{ext}")
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
