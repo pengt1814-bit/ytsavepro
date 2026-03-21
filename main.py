@@ -53,11 +53,15 @@ def download_video():
         if mode == 'audio':
             kbps = quality.replace('kbps', '')
             ydl_opts = {'format': 'bestaudio/best', 'outtmpl': out_path + '.%(ext)s', 'postprocessors': [{'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': kbps}], 'quiet': True}
+            'nocheckcertificate': True,
+'geo_bypass': True,
             ext = 'mp3'
             mime = 'audio/mpeg'
         else:
             height = quality.replace('p', '')
             ydl_opts = {'format': f'bestvideo[height<={height}]+bestaudio/best', 'outtmpl': out_path + '.%(ext)s', 'merge_output_format': 'mp4', 'quiet': True}
+            'nocheckcertificate': True,
+'geo_bypass': True,
             ext = 'mp4'
             mime = 'video/mp4'
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
