@@ -38,6 +38,7 @@ def get_info():
             'skip_download': True,
             'nocheckcertificate': True,
             'geo_bypass': True,
+            'extractor_args': {'youtube': {'player_client': ['android']}},
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -74,6 +75,7 @@ def download_video():
                 'quiet': True,
                 'nocheckcertificate': True,
                 'geo_bypass': True,
+                'extractor_args': {'youtube': {'player_client': ['android']}},
             }
             ext = 'mp3'
             mime = 'audio/mpeg'
@@ -86,6 +88,7 @@ def download_video():
                 'quiet': True,
                 'nocheckcertificate': True,
                 'geo_bypass': True,
+                'extractor_args': {'youtube': {'player_client': ['android']}},
             }
             ext = 'mp4'
             mime = 'video/mp4'
