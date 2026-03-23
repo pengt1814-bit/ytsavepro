@@ -39,7 +39,7 @@ def get_info():
             'nocheckcertificate': True,
             'geo_bypass': True,
             'cookiefile': '/app/cookies.txt',
-            'extractor_args': {'youtube': {'player_client': ['android']}},
+            'extractor_args': {'youtube': {'player_client': ['ios']}},
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
@@ -77,7 +77,7 @@ def download_video():
                 'nocheckcertificate': True,
                 'geo_bypass': True,
                 'cookiefile': '/app/cookies.txt',
-                'extractor_args': {'youtube': {'player_client': ['android']}},
+                'extractor_args': {'youtube': {'player_client': ['ios']}},
             }
             ext = 'mp3'
             mime = 'audio/mpeg'
@@ -91,7 +91,7 @@ def download_video():
                 'nocheckcertificate': True,
                 'geo_bypass': True,
                 'cookiefile': '/app/cookies.txt',
-                'extractor_args': {'youtube': {'player_client': ['android']}},
+                'extractor_args': {'youtube': {'player_client': ['ios']}},
             }
             ext = 'mp4'
             mime = 'video/mp4'
