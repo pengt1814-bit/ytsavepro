@@ -84,7 +84,7 @@ def download_video():
         else:
             height = quality.replace('p', '')
             ydl_opts = {
-                'format': 'bestvideo*+bestaudio/best',
+                'format': 'best/bestvideo+bestaudio',
                 'outtmpl': out_path + '.%(ext)s',
                 'merge_output_format': 'mp4',
                 'quiet': True,
